@@ -62,7 +62,7 @@ const MoodAndArtistSelection = () => {
     });
 
     try {
-      const response = await axios.post('http://localhost:4000/create_playlist', {
+      const response = await axios.post('https://moodster-backend.vercel.app/create_playlist', {
         userId: spotifyUserId, // Usar el ID del usuario obtenido
         playlistName: `Playlist from ${currentMood} to ${desiredMood}`,
         currentMood,
