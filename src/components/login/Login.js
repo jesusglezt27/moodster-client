@@ -1,5 +1,4 @@
 import React from 'react';
-import './Login.css';
 
 function Login() {
   const handleLogin = () => {
@@ -7,8 +6,13 @@ function Login() {
   };
 
   return (
-    <div>
-      <button className='login-button' onClick={handleLogin}>Iniciar sesión con Spotify</button>
+    <div className="flex justify-center items-center h-screen bg-black">
+      <button
+        onClick={handleLogin}
+        className="bg-green-500 text-white py-2 px-6 rounded-full font-bold uppercase hover:bg-green-600 focus:outline-none focus:ring focus:ring-green-300 transition duration-150 ease-in-out"
+      >
+        Iniciar sesión con Spotify
+      </button>
     </div>
   );
 }
