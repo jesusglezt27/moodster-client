@@ -11,7 +11,7 @@ function Login() {
         onClick={handleLogin}
         className="bg-green-500 text-white py-2 px-6 rounded-full font-bold uppercase hover:bg-green-600 focus:outline-none focus:ring focus:ring-green-300 transition duration-150 ease-in-out"
       >
-        Iniciar sesión con Spotify
+        Iniciar sesión con Spotif
       </button>
     </div>
   );
