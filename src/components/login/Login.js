@@ -2,7 +2,7 @@ import React from 'react';
 
 function Login() {
   const handleLogin = () => {
-    window.location.href = 'https://moodster-backend.vercel.app/login';
+    window.location.href = 'https://moodster-server.vercel.app/login';
   };
 
   return (

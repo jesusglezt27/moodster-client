@@ -13,7 +13,7 @@ const Callback = () => {
     const code = urlParams.get('code');
 
     if (code) {
-      axios.post('https://moodster-backend.vercel.app/exchange_code', { code })
+      axios.post('https://moodster-server.vercel.app/exchange_code', { code })
         .then(response => {
           const { accessToken } = response.data;
           login(accessToken); // Utiliza la función login del contexto
