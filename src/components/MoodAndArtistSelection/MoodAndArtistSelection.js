@@ -89,7 +89,7 @@ const MoodAndArtistSelection = () => {
         <div>
           <label>
             Estado de ánimo actual:
-            <select value={currentMood} onChange={(e) => setCurrentMood(e.target.value)}>
+            <select value={''} onChange={(e) => setCurrentMood(e.target.value)}>
               {moods.map(mood => <option key={mood} value={mood}>{mood}</option>)}
             </select>
           </label>
@@ -97,7 +97,7 @@ const MoodAndArtistSelection = () => {
         <div>
           <label>
             Estado de ánimo deseado:
-            <select value={desiredMood} onChange={(e) => setDesiredMood(e.target.value)}>
+            <select value={''} onChange={(e) => setDesiredMood(e.target.value)}>
               {moods.map(mood => <option key={mood} value={mood}>{mood}</option>)}
             </select>
           </label>
