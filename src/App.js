@@ -8,7 +8,7 @@ import Playlist from './components/playlist/Playlist';
 import { useAuth } from './components/context/AuthContext'; // Ajusta la ruta según tu estructura de archivos
 import {AuthProvider} from './components/context/AuthContext';
 function App() {
-  const { authToken } = useAuth();
+  // const { authToken } = useAuth();
 
   return (
     <AuthProvider>
