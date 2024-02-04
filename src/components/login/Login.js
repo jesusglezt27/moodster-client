@@ -6,7 +6,10 @@ function Login() {
   };
 
   return (
-    <div className="flex justify-center items-center h-screen bg-black">
+    <div 
+      className="flex justify-center items-center h-screen"
+      style={{ backgroundColor: '#212121' }}
+    >
       <button
         onClick={handleLogin}
         className="bg-green-500 text-white py-2 px-6 rounded-full font-bold uppercase hover:bg-green-600 focus:outline-none focus:ring focus:ring-green-300 transition duration-150 ease-in-out"

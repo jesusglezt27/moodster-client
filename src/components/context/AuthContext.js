@@ -1,13 +1,12 @@
-// AuthContext.js
-import React, { createContext, useState, useContext } from 'react';
+import React, { createContext, useState, useContext} from 'react';
 
 const AuthContext = createContext();
 
 export const useAuth = () => useContext(AuthContext);
 
 export const AuthProvider = ({ children }) => {
-  const [authToken, setAuthToken] = useState(null);
-  const [spotifyUserId, setSpotifyUserId] = useState(null);
+  const [authToken, setAuthToken] = useState(localStorage.getItem('spotifyAuthToken') || null);
+  const [spotifyUserId, setSpotifyUserId] = useState(localStorage.getItem('spotifyUserId') || null);
 
   const login = (token, userId) => {
     localStorage.setItem('spotifyAuthToken', token);

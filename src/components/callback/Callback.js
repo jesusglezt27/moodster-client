@@ -15,8 +15,8 @@ const Callback = () => {
     if (code) {
       axios.post('https://moodster-server.vercel.app/exchange_code', { code })
         .then(response => {
-          const { accessToken } = response.data;
-          login(accessToken); // Utiliza la función login del contexto
+          const { accessToken, refreshToken, expiresIn } = response.data;
+          login(accessToken, refreshToken, expiresIn);
           navigate('/selector');
         })
         .catch(error => {

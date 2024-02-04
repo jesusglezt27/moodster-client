@@ -13,6 +13,8 @@ const MoodAndArtistSelection = () => {
   const [spotifyUserId, setSpotifyUserId] = useState('');
   const { authToken } = useAuth();
   const navigate = useNavigate();
+  console.log("AuthToken al cargar MoodAndArtistSelection:", authToken);
+
 
   useEffect(() => {
     const fetchUserData = async () => {
@@ -60,7 +62,6 @@ const MoodAndArtistSelection = () => {
       artistsToUse,
       accessToken: authToken
     });
-
     try {
       const response = await axios.post('https://moodster-server.vercel.app/create_playlist', {
         userId: spotifyUserId, // Usar el ID del usuario obtenido
@@ -73,7 +74,7 @@ const MoodAndArtistSelection = () => {
 
       if (response.status === 200) {
         console.log('Playlist creada con éxito:', response.data);
-        navigate('/dashboard'); // Navega al dashboard después de crear la playlist
+        navigate(`/playlist/${response.data.playlistId}`);
       } else {
         console.error('Error al crear playlist', response.data);
       }
@@ -82,43 +83,81 @@ const MoodAndArtistSelection = () => {
     }
   };
 
+  const getArtistSelectionClass = (artistId) => {
+    const baseClasses = "relative rounded-full w-24 h-24 overflow-hidden";
+    if (selectedArtists.includes(artistId)) {
+      return `${baseClasses} border-4 border-pink-500`;
+    }
+    return baseClasses;
+  };
+
+  const getArtistNameClass = (artistId) => {
+    return selectedArtists.includes(artistId) ? 'text-white' : 'text-gray-700';
+  };
+  
   return (
-    <div>
-      <h1>Selecciona tu Estado de Ánimo y Artistas</h1>
-      <form onSubmit={handleSubmit}>
+    <div className="bg-gray-1000 min-h-screen p-8 flex flex-col items-center">
+      <h1 className="text-4xl font-bold mb-8">CHOOSE 5 ARTISTS TO MATCH YOUR MOOD</h1>
+
+      <div className="flex flex-col md:flex-row justify-center gap-4 mb-8">
         <div>
-          <label>
+          <label className="block mb-2 text-sm font-medium text-gray-900 dark:text-gray-300">
             Estado de ánimo actual:
-            <select value={currentMood} onChange={(e) => setCurrentMood(e.target.value)}>
-            <option value="">Selecciona un estado de ánimo</option>
-              {moods.map(mood => <option key={mood} value={mood}>{mood}</option>)}
-            </select>
           </label>
+          <select
+            value={currentMood}
+            onChange={(e) => setCurrentMood(e.target.value)}
+            className="bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-blue-500 focus:border-blue-500 block w-full p-2.5"
+          >
+            <option value="">--Selecciona--</option>
+            {moods.map(mood => <option key={mood} value={mood}>{mood}</option>)}
+          </select>
         </div>
+
         <div>
-          <label>
+          <label className="block mb-2 text-sm font-medium text-gray-900 dark:text-gray-300">
             Estado de ánimo deseado:
-            <select value={desiredMood} onChange={(e) => setDesiredMood(e.target.value)}>
-            <option value="">Selecciona un estado de ánimo</option>
-              {moods.map(mood => <option key={mood} value={mood}>{mood}</option>)}
-            </select>
           </label>
+          <select
+            value={desiredMood}
+            onChange={(e) => setDesiredMood(e.target.value)}
+            className="bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-blue-500 focus:border-blue-500 block w-full p-2.5"
+          >
+            <option value="">--Selecciona--</option>
+            {moods.map(mood => <option key={mood} value={mood}>{mood}</option>)}
+          </select>
         </div>
-        <div>
-          <h2>Selecciona hasta 5 artistas de los 46 más escuchados:</h2>
-          {topArtists.map(artist => (
-            <div key={artist.id}>
-              <input
-                type="checkbox"
-                checked={selectedArtists.includes(artist.id)}
-                onChange={() => handleArtistSelection(artist.id)}
-              />
-              {artist.name}
+      </div>
+
+      <div className="flex flex-wrap justify-center gap-8 mb-8">
+        {topArtists.map((artist, index) => (
+          <div key={artist.id} className="text-center">
+            <div
+              className={getArtistSelectionClass(artist.id)}
+              onClick={() => handleArtistSelection(artist.id)}
+              style={{
+                backgroundImage: `url(${artist.images[0].url})`,
+                backgroundSize: 'cover',
+                backgroundPosition: 'center'
+              }}
+            >
+              {selectedArtists.includes(artist.id) && (
+                <div className="absolute inset-0 bg-pink-500 opacity-75"></div>
+              )}
             </div>
-          ))}
-        </div>
-        <button type="submit">Crear Playlist</button>
-      </form>
+            <p className={`mt-2 ${getArtistNameClass(artist.id)}`}>{artist.name}</p>
+          </div>
+        ))}
+      </div>
+
+      <button
+        type="submit"
+        className="w-64 p-3 bg-pink-500 text-white font-bold rounded-full"
+        disabled={selectedArtists.length !== 5}
+        onClick={handleSubmit}
+      >
+        {selectedArtists.length === 5 ? 'CREATE PLAYLIST' : 'SELECT 5 ARTISTS'}
+      </button>
     </div>
   );
 };
