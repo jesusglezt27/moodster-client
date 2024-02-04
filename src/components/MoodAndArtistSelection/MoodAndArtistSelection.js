@@ -94,7 +94,7 @@ const MoodAndArtistSelection = () => {
   const getArtistNameClass = (artistId) => {
     return selectedArtists.includes(artistId) ? 'text-white' : 'text-gray-700';
   };
-  
+
   return (
     <div className="bg-gray-1000 min-h-screen p-8 flex flex-col items-center">
       <h1 className="text-4xl font-bold mb-8">CHOOSE 5 ARTISTS TO MATCH YOUR MOOD</h1>
