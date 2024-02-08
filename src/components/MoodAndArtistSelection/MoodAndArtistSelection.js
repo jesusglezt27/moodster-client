@@ -2,8 +2,11 @@ import React, { useState, useEffect } from 'react';
 import { useNavigate } from 'react-router-dom';
 import axios from 'axios';
 import { useAuth } from '../context/AuthContext';
+import { css } from "@emotion/react";
+import BeatLoader from "react-spinners/BeatLoader";
 import './MoodAndArtistSelection.css';
-const moods = ['Feliz', 'Triste', 'Energético', 'Relajado', 'Enojado'];
+
+const moods = ['Happy', 'Sad', 'Energetic', 'Relaxed', 'Angry'];
 
 const MoodAndArtistSelection = () => {
   const [currentMood, setCurrentMood] = useState('');
@@ -11,6 +14,7 @@ const MoodAndArtistSelection = () => {
   const [selectedArtists, setSelectedArtists] = useState([]);
   const [topArtists, setTopArtists] = useState([]);
   const [spotifyUserId, setSpotifyUserId] = useState('');
+  const [isLoading, setIsLoading] = useState(false);
   const { authToken } = useAuth();
   const navigate = useNavigate();
   console.log("AuthToken al cargar MoodAndArtistSelection:", authToken);
@@ -52,6 +56,7 @@ const MoodAndArtistSelection = () => {
 
   const handleSubmit = async (e) => {
     e.preventDefault();
+    setIsLoading(true);
     const artistsToUse = selectedArtists.length > 0 ? selectedArtists : topArtists.slice(0, 5).map(artist => artist.id);
 
     console.log('Enviando solicitud de creación de playlist con:', {
@@ -80,6 +85,8 @@ const MoodAndArtistSelection = () => {
       }
     } catch (error) {
       console.error('Error al crear playlist', error);
+    } finally {
+      setIsLoading(false); // Detiene la animación de carga
     }
   };
 
@@ -92,43 +99,73 @@ const MoodAndArtistSelection = () => {
   };
 
   const getArtistNameClass = (artistId) => {
-    return selectedArtists.includes(artistId) ? 'text-white' : 'text-gray-700';
+    return selectedArtists.includes(artistId) ? 'text-white' : 'text-gray-400';
   };
 
-  return (
-    <div className="bg-gray-1000 min-h-screen p-8 flex flex-col items-center">
-      <h1 className="text-4xl font-bold mb-8">CHOOSE 5 ARTISTS TO MATCH YOUR MOOD</h1>
+const override = css`
+  display: block;
+  margin: 0 auto;
+`;
 
-      <div className="flex flex-col md:flex-row justify-center gap-4 mb-8">
-        <div>
-          <label className="block mb-2 text-sm font-medium text-gray-900 dark:text-gray-300">
-            Estado de ánimo actual:
+if (isLoading) {
+  return (
+    <div className="flex flex-col justify-center items-center h-screen bg-darkgray">
+      <div className="flex flex-col justify-center items-center p-10 rounded-lg">
+        <BeatLoader color="#1DB954" loading={isLoading} css={override} size={15} />
+        <p className="text-spotify-green font-sans mt-4 text-lg">
+          Loading your playlist...
+        </p>
+      </div>
+    </div>
+  );
+}
+
+  return (
+    <div style={{ backgroundColor: '#212121' }} className="text-white min-h-screen p-8 flex flex-col items-center">
+    <h1 className="text-4xl font-bold mb-8 text-center px-4">CHOOSE 5 ARTISTS TO MATCH YOUR MOOD</h1>
+  
+      <div className="w-full max-w-md mx-auto">
+        <div className="mb-4">
+          <label htmlFor="current-mood" className="block text-sm font-medium text-gray-200 mb-1">
+            Current Mood:
           </label>
-          <select
+          <select id="current-mood" 
             value={currentMood}
             onChange={(e) => setCurrentMood(e.target.value)}
             className="bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-blue-500 focus:border-blue-500 block w-full p-2.5"
           >
-            <option value="">--Selecciona--</option>
+            <option value="">--Select--</option>
             {moods.map(mood => <option key={mood} value={mood}>{mood}</option>)}
           </select>
         </div>
-
-        <div>
-          <label className="block mb-2 text-sm font-medium text-gray-900 dark:text-gray-300">
-            Estado de ánimo deseado:
+  
+        <div className="mb-6">
+        <label htmlFor="desired-mood" className="block text-sm font-medium text-gray-200 mb-1">
+          Desired Mood:
           </label>
-          <select
+          <select id="desired-mood" 
             value={desiredMood}
             onChange={(e) => setDesiredMood(e.target.value)}
             className="bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-blue-500 focus:border-blue-500 block w-full p-2.5"
           >
-            <option value="">--Selecciona--</option>
+            <option value="">--Select--</option>
             {moods.map(mood => <option key={mood} value={mood}>{mood}</option>)}
           </select>
         </div>
       </div>
+  
+      <button
+      type="submit"
+      className={`mt-4 mb-8 w-64 px-6 py-3 text-white font-bold text-lg rounded-full 
+        ${selectedArtists.length === 5 ? 'bg-spotify-green hover:bg-spotify-green focus:ring-spotify-green' : 'bg-gray-700 hover:bg-gray-600 focus:ring-gray-500'}
+        focus:outline-none focus:ring-2 focus:ring-opacity-50 transition-colors`}
+      disabled={selectedArtists.length !== 5}
+      onClick={handleSubmit}
+    >
+      {selectedArtists.length === 5 ? 'Create Playlist' : 'Select 5 Artists'}
+    </button>
 
+  
       <div className="flex flex-wrap justify-center gap-8 mb-8">
         {topArtists.map((artist, index) => (
           <div key={artist.id} className="text-center">
@@ -142,24 +179,15 @@ const MoodAndArtistSelection = () => {
               }}
             >
               {selectedArtists.includes(artist.id) && (
-                <div className="absolute inset-0 bg-pink-500 opacity-75"></div>
+                <div className="absolute inset-0 bg-spotify-green opacity-75"></div>
               )}
             </div>
             <p className={`mt-2 ${getArtistNameClass(artist.id)}`}>{artist.name}</p>
           </div>
         ))}
       </div>
-
-      <button
-        type="submit"
-        className="w-64 p-3 bg-pink-500 text-white font-bold rounded-full"
-        disabled={selectedArtists.length !== 5}
-        onClick={handleSubmit}
-      >
-        {selectedArtists.length === 5 ? 'CREATE PLAYLIST' : 'SELECT 5 ARTISTS'}
-      </button>
     </div>
   );
-};
+}  
 
 export default MoodAndArtistSelection;

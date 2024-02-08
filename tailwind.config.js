@@ -2,10 +2,18 @@
 module.exports = {
   content: ["./src/**/*.{html,js,jsx,ts,tsx}"],
   theme: {
-    extend: {},
+    extend: {
+      colors: {
+        darkgray: '#212121',
+        'spotify-green': '#1DB954',
+      }
+    },
     fontFamily: {
-      signature: ["Great Vibes"]
+      signature: ["Great Vibes"],
+      sans: ['Roboto', 'sans-serif'],
     }
   },
-  plugins: [],
+  plugins: [
+    require('@tailwindcss/forms')
+  ],
 }
